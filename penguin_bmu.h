@@ -63,21 +63,14 @@
   int modeTimeLeft=-1;
   Mode modeReq;
   boolean newMode=false;
+  boolean overrideOn=false;
   
   // safty preameters
   boolean shutdownTimerOn = false;
   Metro shutdownTimer = Metro(ONEMINUTE);
-  
-  const int bmeOnPriority1 = 0;
-  const int bmeOnPriority2 = 0x05A0;
-  const int bmeChgPriority1 = 0x0129;
-  const int bmeChgPriority2 = 0x0616;
-  const int bmeBalPriority1 = 0x27EB;
-  const int bmeBalPriority2 = 0x1814;
-  
-  const int bmuOnPriority1 = 0X0080;
-  const int bmuOnPriority2 = 0x0053;
-  const int bmuChgPriority1 = 0x2517;
-  const int bmuChgPriority2 = 0x0068;
-  const int bmuBalPriority1 = 0x165B;
-  const int bmuBalPriority2 = 0x0024;
+
+  const int bmePriority1[4] = {0,0, 0x0129, 0x27EB};
+  const int bmePriority2[4] = {0,0x05A0, 0x0616, 0x1814};
+  const int bmuPriority1[4] = {0,0X0080, 0x2517, 0x165B};
+  const int bmuPriority2[4] = {0,0x0053, 0x0068, 0x0024};
+ 

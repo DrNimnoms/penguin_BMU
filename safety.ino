@@ -21,6 +21,18 @@ void saftyCheck(){
   }
 }
 
+/*------------------------------------------------------------------------------
+ * void overrideFlag(int device, int flagNum)
+ * removes a flagNum on a given device 
+ *----------------------------------------------------------------------------*/
+ void overrideFlags(){
+  overrideOn = false;
+  Mode overMode=bmuSA.get_mode();  // get current mode
+  modeTimeLeft=-1;              // make sure time left in mode is truned off
+  shutdownTimerOn = false;      // make sure shutdown timer is trund off
+  bmuSA.set_flag_over(bmuPriority2[overMode]);   // override bmu priority 2 flags
+  bmesCh1.set_flag_over(bmePriority2[overMode]);  // override bme priority 1 flags
+ }
 
 /*------------------------------------------------------------------------------
  * void turnSysOff()
@@ -33,7 +45,6 @@ void turnSysOff(){
   modeTimeLeft=-1;              // make sure time left in mode is truned off
   shutdownTimerOn = false;      // make sure shutdown timer is trund off
 }
-
 
 /*------------------------------------------------------------------------------
  * void processReq(Mode modein)
@@ -63,7 +74,6 @@ void processReq(){
   }
 }
 
-
 /*------------------------------------------------------------------------------
  * byte getPriority(Mode modein)
  * given a mode, bmu and bme flags returns a priority
@@ -78,17 +88,10 @@ void processReq(){
    // get all bme flags
    int bmeFlag = bmesCh1.cal_bme_flag();
 
-   if(modein==SYS_ON){
-     if(((bmeFlag & bmeOnPriority1) | (bmuFlag & bmuOnPriority1)) !=0) tempoPriority=1;
-     else if((bmeFlag & bmeOnPriority2) | (bmuFlag & bmuOnPriority2) !=0) tempoPriority=2;
+   if(modein >= SYS_ON && modein <= BALANCE){
+     if(((bmeFlag & bmePriority1[modein]) | (bmuFlag & bmuPriority1[modein])) !=0) tempoPriority=1;
+     else if((bmeFlag & bmePriority2[modein]) | (bmuFlag & bmuPriority2[modein]) !=0) tempoPriority=2;
    }  
-   else if(modein==CHARGE){
-     if(((bmeFlag & bmeChgPriority1) | (bmuFlag & bmuChgPriority1) | bmcComFalg) !=0) tempoPriority=1;
-     else if((bmeFlag & bmeChgPriority2) | (bmuFlag & bmuChgPriority2) !=0) tempoPriority=2;
-   }
-   else if(modein==BALANCE){
-     if(((bmeFlag & bmeBalPriority1) | (bmuFlag & bmuBalPriority1) | bmcComFalg) !=0) tempoPriority=1;
-     else if((bmeFlag & bmeBalPriority2) | (bmuFlag & bmuBalPriority2) !=0) tempoPriority=2;
-   }  
+   
    return tempoPriority;
  }

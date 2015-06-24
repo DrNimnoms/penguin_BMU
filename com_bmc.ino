@@ -57,39 +57,36 @@ void BMCcomm()
      cmdIn = cmdIn.substring(sVal+1);
 
      if(cmdIn.indexOf("OVE") >=0){
-       sVal=cmdIn.indexOf('_');
-       parseOverride(cmdIn.substring(sVal+1));
+      overrideOn=true;
        if(uartPrint) Serial.println("Request: Override");
+     }   
+     else if(cmdIn.indexOf("OFF") >=0){
+       modeReq = SYS_OFF;
+       newMode = true;
+       if(uartPrint) Serial.println("Request: OFF");
      }
-     else{
-       
-       if(cmdIn.indexOf("OFF") >=0){
-         modeReq = SYS_OFF;
-         newMode = true;
-         if(uartPrint) Serial.println("Request: OFF");
-       }
-       else if(cmdIn.indexOf("ON") >=0){
-         modeReq = SYS_ON;
-         newMode = true;
-         if(uartPrint) Serial.println("Request: ON");
-       }
-       else if(cmdIn.indexOf("CHG") >=0){
-         modeReq = CHARGE;
-         newMode = true;
-         sVal=cmdIn.indexOf('_');
-         float tempVal = parseVoltage(cmdIn.substring(sVal+1));
-         bmuSA.set_chg2vol(tempVal);
-         if(uartPrint){
-           Serial.print("Request: CHARGE to");
-           Serial.println(tempVal,3);
-         }
-       }
-       else if(cmdIn.indexOf("BAL") >=0){
-         modeReq = BALANCE;
-         newMode = true;
-         if(uartPrint) Serial.println("Request: BALANCE");
+     else if(cmdIn.indexOf("ON") >=0){
+       modeReq = SYS_ON;
+       newMode = true;
+       if(uartPrint) Serial.println("Request: ON");
+     }
+     else if(cmdIn.indexOf("CHG") >=0){
+       modeReq = CHARGE;
+       newMode = true;
+       sVal=cmdIn.indexOf('_');
+       float tempVal = parseVoltage(cmdIn.substring(sVal+1));
+       bmuSA.set_chg2vol(tempVal);
+       if(uartPrint){
+         Serial.print("Request: CHARGE to");
+         Serial.println(tempVal,3);
        }
      }
+     else if(cmdIn.indexOf("BAL") >=0){
+       modeReq = BALANCE;
+       newMode = true;
+       if(uartPrint) Serial.println("Request: BALANCE");
+     }
+     
    }
 //   if(uartPrint) {
 //     Serial.print("bmc reqMode: ");
@@ -107,57 +104,6 @@ void BMCcomm()
    return volOut/1000;
  }
  
- /*------------------------------------------------------------------------------
- * void parseOverride(String overFlags)
- * parce the override command from BMC
- *----------------------------------------------------------------------------*/
- void parseOverride(String overFlags){
-   String deviceString="";
-   String flagString="";
-   int device=-1;
-   int flagNum=-1;
-   modeTimeLeft=-1;              // make sure time left in mode is truned off
-   shutdownTimerOn = false;      // make sure shutdown timer is trund off
-   if(uartPrint) {
-     Serial.println("process override:");
-     Serial.println(overFlags);
-   }
-   int sVal=overFlags.indexOf('_'); //find the end of the first override Flag
-   do{
-     deviceString=overFlags.substring(0,2); //grab device
-     device=deviceString.toInt();       // turn into number
-     flagString=overFlags.substring(2,4); //grab device
-     flagNum=flagString.toInt();       // turn into number
-     overrideFlag(device,flagNum);      // override the flag on the given device
-     overFlags=overFlags.substring(sVal+1);
-     sVal=overFlags.indexOf('_'); //find the end of the next override Flag
-   }while(sVal>0);
-     
- }
-
-/*------------------------------------------------------------------------------
- * void overrideFlag(int device, int flagNum)
- * removes a flagNum on a given device 
- *----------------------------------------------------------------------------*/
- void overrideFlag(int device, int flagNum){
-   if(device == 0){
-     bmuSA.set_flag_over(flagNum);
-     if(uartPrint){
-       Serial.print("BMU: flag num ");
-       Serial.print(flagNum);
-     }
-   }
-   else if(device > 0 && device <= BME_NUM){
-     bmesCh1.set_flag_over(device-1,flagNum);
-     if(uartPrint){
-       Serial.print("BME "); 
-       Serial.print(device);
-       Serial.print(": flag num ");
-       Serial.println(flagNum);
-     }
-   }  
- }
-
 /*------------------------------------------------------------------------------
  * void getData(&data_out[0])
  * get flag, dt, SOC, total voltage, current, cell voltage, temperaturs, ect.

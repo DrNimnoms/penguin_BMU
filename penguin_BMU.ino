@@ -70,9 +70,12 @@ void loop() {
     
     // communicate with BMC. get command and send current data
     BMCcomm();   
-//    if(uartPrint) Serial.println(bmuSA.get_current());
+    
     // process request if key matches and command is not override
     if(newMode) processReq();
+    
+    // process override request
+    if(overrideOn) overrideFlags();
     
     // priority check and shutdown or start shutdown timer if needed
     saftyCheck();
