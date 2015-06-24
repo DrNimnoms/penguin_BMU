@@ -23,9 +23,9 @@ void BMCcomm()
       }    
     }
     client.write(&data_out[0],116);
-    client.write('\r');
-    client.write('\n');
-    client.write('\n');
+    client.write(0xEF);
+    client.write(0xEF);
+    client.write(0xEF);
     parseCommand(command);
 //    if(uartPrint) {
 //      Serial.print("bmc command: ");
