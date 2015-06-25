@@ -18,6 +18,7 @@
 #include "penguin_bmu.h"
 
 
+
 void setup() {
   
   if(uartPrint) debugInital();
@@ -25,7 +26,12 @@ void setup() {
   
   // initialize sd card and get limits, priorities, and battery state from files on sd card
   SdInital();
-  getLimits();
+  // get information from the SD card
+  if(sdCartIn){
+    getPriority();
+    getLimits();
+  }
+  
   // initialize the bmu shield
   bmuSA.bmuShield_initialize();
   
@@ -36,8 +42,6 @@ void setup() {
     
   // initialize BMC communication
   bmcInital();
-  
-  getLimits();
 
   SPI.setClockDivider(CLOCK_DIVIDER);
 //  SPI.setBitOrder(MSBFIRST);
@@ -85,6 +89,7 @@ void loop() {
   }
   
   if(self_test_timer.check()){
+
     // conduct BME self tests
 //    bmesCh1.bme_self_test(); 
   }  

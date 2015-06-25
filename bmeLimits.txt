@@ -1,0 +1,13 @@
+myAccuracyLimit = 0.015; //if myVol_ref2 is within myAccuracyLimit of 3V then the ADC is working
+myVolHighAlarm = 4.205;  //high virtual cell myVoltage limit for myVoltage error
+myVolLowWarn = 3.2;       //low virtual cell myVoltage limit for myVoltage warning
+myVolLowAlarm = 3.0;      //low virtual cell myVoltage limit for myVoltage error
+myDeadBatAlarm = 2.5;   // the myVoltage at which the system will not go in to charge mode
+myVolBmeMismatch  = 0.06;   //myVoltage mismatch limit between calculated and measured total myVoltage of battery module
+myTempVCAlarm = 60;    //virtual cell myTemperature limit for myTemperature error
+myTempTiAlarm = 75;    // BME LTC chip myTemperature limit for myTemperature error
+myTempHSAlarm = 120;   //heat sink myTemperature limit for myTemperature error
+myTempVCWarn = 40;    //virtual cell myTemperature limit for myTemperature warning
+myTempTiWarn = 65;    //BME LTC chip myTemperature limit for myTemperature warning
+myTempHSWarn = 110;   //heat sink myTemperature limit for myTemperature warning
+myLowTempAlarm = -40; // Low myTemperature sensors limit for low myTemperature alarm 

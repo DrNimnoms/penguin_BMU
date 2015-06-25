@@ -55,6 +55,7 @@
   
   // sd card pramerters
   byte sdCardPin = 4;
+  boolean sdCartIn = false;
   
   
   // BMC mode request preameters
@@ -69,8 +70,10 @@
   boolean shutdownTimerOn = false;
   Metro shutdownTimer = Metro(ONEMINUTE);
 
-  const int bmePriority1[4] = {0,0, 0x0129, 0x07EB};
-  const int bmePriority2[4] = {0,0x05A0, 0x0616, 0x1814};
-  const int bmuPriority1[4] = {0,0X0080, 0x4517, 0x2E5B};
-  const int bmuPriority2[4] = {0,0x0053, 0x0068, 0x0024};
- 
+  
+  int bmePriority1[4] = {0,0, 0x0129, 0x07EB};
+  int bmePriority2[4] = {0,0x05A0, 0x0616, 0x1814};
+  int bmuPriority1[4] = {0,0X0080, 0x4517, 0x2E5B};
+  int bmuPriority2[4] = {0,0x0033, 0x0068, 0x0024};
+  boolean bmcPriority1[4] = {0, 0, 1, 1};
+  

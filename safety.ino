@@ -89,7 +89,7 @@ void processReq(){
    int bmeFlag = bmesCh1.cal_bme_flag();
 
    if(modein >= SYS_ON && modein <= BALANCE){
-     if(((bmeFlag & bmePriority1[modein]) | (bmuFlag & bmuPriority1[modein])) !=0) tempoPriority=1;
+     if(((bmeFlag & bmePriority1[modein]) | (bmuFlag & bmuPriority1[modein]) | (bmcPriority1[modein] & bmcComFalg)) !=0) tempoPriority=1;
      else if((bmeFlag & bmePriority2[modein]) | (bmuFlag & bmuPriority2[modein]) !=0) tempoPriority=2;
    }  
    
