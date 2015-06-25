@@ -17,39 +17,23 @@ void SdInital(void){
 
 void getLimits(void){
   File myFile;
-  int endNow = 0;
-  //  // open the file. note that only one file can be open at a time,
-  // so you have to close this one before opening another.
-//  myFile = SD.open("test.txt", FILE_WRITE);
-//  
-//  // if the file opened okay, write to it:
-//  if (myFile) {
-//    Serial.print("Writing to test.txt...");
-//    myFile.println("testing 1, 2, 3.");
-//    // close the file:
-//    myFile.close();
-//    Serial.println("done.");
-//  } else {
-//    // if the file didn't open, print an error:
-//    Serial.println("error opening test.txt");
-//  }
-//  
-//  // re-open the file for reading:
+  boolean endNow = false;
+  String limitsString=""
   myFile = SD.open("limits.txt");
   if (myFile) {
-    Serial.println("limits.txt:");
+    Serial.println("Gitting limits from limits.txt");
     
     // read from the file until there's nothing else in it:
-    while (myFile.available() && endNow<16) {
-        Serial.write(myFile.read());
-        endNow ++;
+    while (myFile.available() && !endNow) {
+        limitsString += myFile.read();
+        if(limitsString.indexOf("//") >=0) endNow=true;
     }
     // close the file:
     myFile.close();
   } 
   else {
     // if the file didn't open, print an error:
-    Serial.println("error opening test.txt");
+    Serial.println("error opening Limits.txt");
   }
 
   SPI.setClockDivider(CLOCK_DIVIDER);
