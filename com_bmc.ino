@@ -192,6 +192,7 @@ void bmcInital(void){
   mac[5] += BMUNum;
   
   if(uartPrint){
+    Serial.println("initializing Ethernet shield with:");
     Serial.print("ip_address: ");
     for(int i=0;i<3;i++){
       Serial.print(ipadd[i]);
@@ -208,7 +209,6 @@ void bmcInital(void){
     Serial.print("port: ");
     Serial.println(port);
   }
-  
   IPAddress ip(ipadd);
   server = EthernetServer(port);
   Ethernet.begin(mac, ip, gateway, subnet);

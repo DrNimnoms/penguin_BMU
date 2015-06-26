@@ -14,11 +14,117 @@ void SdInital(void){
   if(uartPrint) Serial.println("SD card initialization done.");
 }
 
+
+/*------------------------------------------------------------------------------
+ * void storeIc(void)
+ * get the falg priorities from the on board SD card
+ *----------------------------------------------------------------------------*/
+void storeIc(){
+  File myFile;
+  uint16_t intTempo[2];
+    float fTempo[4];
+  // Check to see if the file exists: 
+  if (SD.exists("IC.txt")) {
+    // delete the file:
+    SD.remove("IC.txt");
+    bmuSA.get_icInfo(&intTempo[0],&fTempo[0]);
+  }
+
+  // open the file. note that only one file can be open at a time,
+  // so you have to close this one before opening another.
+  myFile = SD.open("IC.txt", FILE_WRITE);
+  if (myFile) {
+    myFile.print("cap = ");
+    myFile.println(fTempo[0],4);
+    myFile.print("totalDis = ");
+    myFile.println(fTempo[1],4);
+    myFile.print("avgDOD = ");
+    myFile.println(fTempo[2],4);
+    myFile.print("DOD = ");
+    myFile.println(fTempo[3],4);
+    myFile.print("cycleCount = ");
+    myFile.println(intTempo[0]);
+    myFile.print("chgCount = ");
+    myFile.println(intTempo[1]);
+    myFile.close();  
+  }
+  else{
+    if(uartPrint) Serial.println("error opening IC.txt");
+  }
+  SPI.setClockDivider(CLOCK_DIVIDER);
+}
+
+/*------------------------------------------------------------------------------
+ * void getPriority(void)
+ * get the falg priorities from the on board SD card
+ *----------------------------------------------------------------------------*/
+void getIc(){
+  File myFile;
+  String IcInfo="";
+  String tempo="";
+  int index1=0, index2=0;
+  uint16_t intTempo[2];
+  float fTempo[4];
+  
+  // get bmu limits
+  myFile = SD.open("IC.txt");
+  if (myFile) {
+
+    //read all the file
+    while (myFile.available()) {
+      IcInfo += (char)myFile.read();
+    }
+    // close the file:
+    myFile.close();
+    
+    if(uartPrint){
+      Serial.println("Battery history: ");
+      Serial.print(IcInfo);
+    }
+
+    for(int i=0;i<4;i++){
+      index1 = IcInfo.indexOf("=");
+      index2 = IcInfo.indexOf("\n");
+      tempo = IcInfo.substring(index1+1, index2);
+      fTempo[i] = tempo.toFloat();
+      IcInfo = IcInfo.substring(index2+1);
+    }
+    for(int i=0;i<2;i++){
+      index1 = IcInfo.indexOf("=");
+      index2 = IcInfo.indexOf("\n");
+      tempo = IcInfo.substring(index1+1, index2);
+      intTempo[i] = tempo.toInt();
+      IcInfo = IcInfo.substring(index2+1);
+    }
+    
+    bmuSA.set_icInfo(&intTempo[0],&fTempo[0]);
+    
+  }
+  else {
+    // if the file didn't open, print an error:
+    if(uartPrint)Serial.println("Battery has no history file ");
+    SPI.setClockDivider(CLOCK_DIVIDER);
+    bmesCh1.meas_act_bmes();
+    // set bmu min, max, and sum
+    bmuSA.set_bme_sum(bmesCh1.cal_sum_of_bmes());
+    bmuSA.set_bme_min(bmesCh1.cal_min_of_bmes());
+    bmuSA.set_bme_max(bmesCh1.cal_max_of_bmes());
+    if(uartPrint) Serial.println(bmesCh1.cal_min_of_bmes());
+    bmuSA.initalizeSoc();
+  }
+  
+  SPI.setClockDivider(CLOCK_DIVIDER);
+}
+
+/*------------------------------------------------------------------------------
+ * void getPriority(void)
+ * get the falg priorities from the on board SD card
+ *----------------------------------------------------------------------------*/
 void getPriority(){
   File myFile;
   String priorityInfo="";
   char tempoChar[3];
-  long index=0;
+  int index=0;
 
   
   // get bmu limits
@@ -61,34 +167,36 @@ void getPriority(){
       priorityInfo = priorityInfo.substring(index+7);
     }
     
-    if(uartPrint){
-      Serial.print(" bmcPriority1: 0x");
-      for(int j=1;j<4;j++) Serial.print(bmcPriority1[j]);
-      Serial.print("\n bmuPriority1: 0x");
-      for(int j=1;j<4;j++) Serial.print(bmuPriority1[j],HEX);
-      Serial.print("\n bmuPriority2: 0x");
-      for(int j=1;j<4;j++) Serial.print(bmuPriority2[j],HEX);
-      Serial.print("\n bmePriority1: 0x");
-      for(int j=1;j<4;j++) Serial.print(bmePriority1[j],HEX);
-      Serial.print("\n bmePriority2: 0x");
-      for(int j=1;j<4;j++) Serial.print(bmePriority2[j],HEX);
-      Serial.println(" ");
-    }
+//    if(uartPrint){
+//      Serial.print(" bmcPriority1: 0x");
+//      for(int j=1;j<4;j++) Serial.print(bmcPriority1[j]);
+//      Serial.print("\n bmuPriority1: 0x");
+//      for(int j=1;j<4;j++) Serial.print(bmuPriority1[j],HEX);
+//      Serial.print("\n bmuPriority2: 0x");
+//      for(int j=1;j<4;j++) Serial.print(bmuPriority2[j],HEX);
+//      Serial.print("\n bmePriority1: 0x");
+//      for(int j=1;j<4;j++) Serial.print(bmePriority1[j],HEX);
+//      Serial.print("\n bmePriority2: 0x");
+//      for(int j=1;j<4;j++) Serial.print(bmePriority2[j],HEX);
+//      Serial.println(" ");
+//    }
   } 
   else {
     // if the file didn't open, print an error:
     if(uartPrint) Serial.println("error opening flag_priorities.txt");
   }
-
-  
 }
 
+/*------------------------------------------------------------------------------
+ * void getLimits(void)
+ * get the falg limits from the on board SD card
+ *----------------------------------------------------------------------------*/
 void getLimits(void){
   File myFile;
   boolean endNow = false;
   String limitsString="";
   String tempo="";
-  int index1=0, index2;
+  int index1=0, index2=0;
   float bmeLimits[13]={0};
   float bmuLimits[14]={0};
 
@@ -111,7 +219,7 @@ void getLimits(void){
       bmuLimits[i] = tempo.toFloat();
       index1 = limitsString.indexOf("\n");
       limitsString = limitsString.substring(index1+1);
-      if(uartPrint)Serial.println(bmuLimits[i],3);
+//      if(uartPrint)Serial.println(bmuLimits[i],3);
     }
     bmuSA.set_limits(bmuLimits);
   } 
@@ -140,7 +248,7 @@ void getLimits(void){
       bmeLimits[i] = tempo.toFloat();
       index1 = limitsString.indexOf("\n");
       limitsString = limitsString.substring(index1+1);
-      if(uartPrint)Serial.println(bmeLimits[i],3);
+//      if(uartPrint)Serial.println(bmeLimits[i],3);
     }
     bmesCh1.set_limits(bmeLimits);
   } 
@@ -148,8 +256,6 @@ void getLimits(void){
     // if the file didn't open, print an error:
     if(uartPrint)Serial.println("error opening bmeLimits.txt");
   }
-  
-  SPI.setClockDivider(CLOCK_DIVIDER);
 }
 
 

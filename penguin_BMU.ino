@@ -34,18 +34,20 @@ void setup() {
   
   // initialize the bmu shield
   bmuSA.bmuShield_initialize();
+  if(uartPrint)Serial.println("initialization BMU shield done");
   
   //initilize BME spi communications
   bme_com_initialize(CLOCK_DIVIDER,SPI_MODE0);
   //set BME adc for both channals
   bmesCh1.set_adc(MD_NORMAL,DCP_DISABLED,CELL_CH_ALL,AUX_CH_ALL,STAT_CH_ALL);
-    
+  if(uartPrint)Serial.println("initialization BME shield done");
+  
   // initialize BMC communication
   bmcInital();
 
-  SPI.setClockDivider(CLOCK_DIVIDER);
-//  SPI.setBitOrder(MSBFIRST);
-//  bme_com_initialize(CLOCK_DIVIDER,SPI_MODE0);
+  // get initail conditions from sd card if no history then use voltage lookup table
+  getIc();
+
 }
 
 void loop() {
@@ -89,9 +91,9 @@ void loop() {
   }
   
   if(self_test_timer.check()){
-
     // conduct BME self tests
-//    bmesCh1.bme_self_test(); 
+    bmesCh1.bme_self_test(); 
+    storeIc();
   }  
 
 }
