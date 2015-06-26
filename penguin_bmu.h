@@ -18,7 +18,7 @@
   #define FIVEHZ 200   // in milliseconds
 // timeres
   Metro looptimer = Metro(FIVEHZ);
-  Metro self_test_timer = Metro(FIVESECONDS);
+  Metro self_test_timer = Metro(FIVEMINUTES);
   
   
   // BME communication
@@ -63,6 +63,7 @@
   byte keyIn;
   int modeTimeLeft=-1;
   Mode modeReq;
+  float chg2volReq=0;
   boolean newMode=false;
   boolean overrideOn=false;
   

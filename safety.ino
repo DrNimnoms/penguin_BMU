@@ -57,19 +57,22 @@ void processReq(){
   bmesCh1.reset_flags();
   Mode currentMode = bmuSA.get_mode();
   
-  if(currentMode != SYS_OFF){  // system can only go to off mode if not in off mode
-    modeReq = SYS_OFF;  
-    turnSysOff();
-  }
-  else if(modeReq != currentMode) 
+  if(modeReq != currentMode) 
   {
     byte reqPriority = getPriority(modeReq);  // get the priority of the requested mode
     if(reqPriority != 1){                    // check if the priority is not 1
-      bmuSA.set_mode(modeReq);
-      if(modeReq == BALANCE){
+      if(modeReq == SYS_OFF) turnSysOff();
+      else if(modeReq == SYS_ON) bmuSA.set_mode(modeReq);
+      else if(modeReq == CHARGE)
+      {
+        bmuSA.set_mode(modeReq);
+        bmuSA.set_chg2vol(chg2volReq);
+      } 
+      else if(modeReq == BALANCE){
+        bmuSA.set_mode(modeReq);
         bmesCh1.set_bal2vol(bmesCh1.cal_min_of_bmes());
         bmesCh1.set_balancing(true);
-      }
+      } 
     }
   }
 }

@@ -18,7 +18,6 @@
 #include "penguin_bmu.h"
 
 
-
 void setup() {
   
   if(uartPrint) debugInital();
@@ -53,6 +52,7 @@ void setup() {
 void loop() {
   
   if (looptimer.check()) { // check if the metro has passed its interval 
+    
     // measure, actuate, set flags for BMEs
     bmesCh1.meas_act_bmes();
     
@@ -65,15 +65,6 @@ void loop() {
     bmuSA.set_bme_max(bmesCh1.cal_max_of_bmes());
     bmuSA.set_flags();
     
-//    Serial.println(bmesCh1.cal_sum_of_bmes());
-//    if(uartPrint){
-//      int tempo= bmuSA.get_flag();
-//      Serial.print(bmuSA.get_pressure());
-//      Serial.print(", ");
-//      Serial.println(bmuSA.get_presRate());
-//      if ( (tempo>>7 & 1)==1) Serial.println(bmuSA.get_current());
-//    }
-    
     // communicate with BMC. get command and send current data
     BMCcomm();   
     
@@ -82,18 +73,21 @@ void loop() {
     
     // process override request
     if(overrideOn) overrideFlags();
-    
+
     // priority check and shutdown or start shutdown timer if needed
     saftyCheck();
     
     // actuate relays on bmu shield
     bmuSA.act_bmuShield();
+    
   }
   
   if(self_test_timer.check()){
+
     // conduct BME self tests
     bmesCh1.bme_self_test(); 
+
+    // Save data on SD card incase of restart  // if(bmuSA.get_mode() != SYS_OFF)
     storeIc();
   }  
-
 }

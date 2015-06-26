@@ -74,11 +74,10 @@ void BMCcomm()
        modeReq = CHARGE;
        newMode = true;
        sVal=cmdIn.indexOf('_');
-       float tempVal = parseVoltage(cmdIn.substring(sVal+1));
-       bmuSA.set_chg2vol(tempVal);
+       chg2volReq = parseVoltage(cmdIn.substring(sVal+1));
        if(uartPrint){
-         Serial.print("Request: CHARGE to");
-         Serial.println(tempVal,3);
+         Serial.print("Request: CHARGE to ");
+         Serial.println(chg2volReq,3);
        }
      }
      else if(cmdIn.indexOf("BAL") >=0){
@@ -101,7 +100,7 @@ void BMCcomm()
  *----------------------------------------------------------------------------*/
  float parseVoltage(String sVoltage){
    float volOut = sVoltage.toInt();
-   return volOut/1000;
+   return volOut/10000;
  }
  
 /*------------------------------------------------------------------------------
