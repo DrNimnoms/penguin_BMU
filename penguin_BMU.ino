@@ -51,7 +51,7 @@ void setup() {
 
 void loop() {
   
-  if (looptimer.check()) { // check if the metro has passed its interval 
+  if (looptimer.check()) { // check if the metro has passed loop time interval 
     
     // measure, actuate, set flags for BMEs
     bmesCh1.meas_act_bmes();
@@ -82,12 +82,12 @@ void loop() {
     
   }
   
-  if(self_test_timer.check()){
+  if(self_test_timer.check()){ // check if the metro has passed self-test time interval 
 
     // conduct BME self tests
     bmesCh1.bme_self_test(); 
 
-    // Save data on SD card incase of restart  // if(bmuSA.get_mode() != SYS_OFF)
+    // Save data on SD card incase of restart 
     storeIc();
   }  
 }
