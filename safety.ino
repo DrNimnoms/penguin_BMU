@@ -17,7 +17,9 @@ void saftyCheck(){
   }
   else if(shutdownTimerOn){
     if(shutdownTimer.check()) turnSysOff();
-    else modeTimeLeft = (ONEMINUTE - shutdownTimer.elapsed())/100;
+    //subtract time elapsed and comunication time from total shutdown time
+    else modeTimeLeft = (SHUTDOWN_TIME - shutdownTimer.elapsed()-1000)/100; 
+    if (modeTimeLeft<0) modeTimeLeft=0;
   }
 }
 
@@ -44,6 +46,8 @@ void turnSysOff(){
   bmesCh1.set_balancing(false); // make sure balancing is off
   modeTimeLeft=-1;              // make sure time left in mode is truned off
   shutdownTimerOn = false;      // make sure shutdown timer is trund off
+  looptimer.interval(SLOW_LOOP_TIME);
+  bmuSA.set_dt(SLOW_LOOP_TIME/1000.0);
 }
 
 /*------------------------------------------------------------------------------
@@ -62,16 +66,24 @@ void processReq(){
     byte reqPriority = getPriority(modeReq);  // get the priority of the requested mode
     if(reqPriority != 1){                    // check if the priority is not 1
       if(modeReq == SYS_OFF) turnSysOff();
-      else if(modeReq == SYS_ON) bmuSA.set_mode(modeReq);
+      else if(modeReq == SYS_ON){
+        bmuSA.set_mode(modeReq);
+        looptimer.interval(LOOP_TIME);
+        bmuSA.set_dt(LOOP_TIME/1000.0);
+      }
       else if(modeReq == CHARGE)
       {
         bmuSA.set_mode(modeReq);
         bmuSA.set_chg2vol(chg2volReq);
+        looptimer.interval(LOOP_TIME);
+        bmuSA.set_dt(LOOP_TIME/1000.0);
       } 
       else if(modeReq == BALANCE){
         bmuSA.set_mode(modeReq);
         bmesCh1.set_bal2vol(bmesCh1.cal_min_of_bmes());
         bmesCh1.set_balancing(true);
+        looptimer.interval(LOOP_TIME);
+        bmuSA.set_dt(LOOP_TIME/1000.0);
       } 
     }
   }

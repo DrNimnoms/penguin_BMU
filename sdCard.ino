@@ -55,8 +55,8 @@ void storeIc(){
 }
 
 /*------------------------------------------------------------------------------
- * void getPriority(void)
- * get the falg priorities from the on board SD card
+ * void getIc(void)
+ * get the battery initial conditions from the on board SD card
  *----------------------------------------------------------------------------*/
 void getIc(){
   File myFile;
@@ -69,7 +69,7 @@ void getIc(){
   // get bmu limits
   myFile = SD.open("IC.txt");
   if (myFile) {
-
+    if(uartPrint) Serial.println("Gitting Battery IC from IC.txt");
     //read all the file
     while (myFile.available()) {
       IcInfo += (char)myFile.read();

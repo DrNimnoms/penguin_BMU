@@ -83,7 +83,10 @@ void BMCcomm()
      else if(cmdIn.indexOf("BAL") >=0){
        modeReq = BALANCE;
        newMode = true;
-       if(uartPrint) Serial.println("Request: BALANCE");
+       if(uartPrint){
+        Serial.println("Request: BALANCE to ");
+        Serial.println(bmesCh1.cal_min_of_bmes(),4);
+       }
      }
      
    }
@@ -116,7 +119,7 @@ void getData(byte *data_out){
 //  if(uartPrint) Serial.println(modeReq);
   data_out[idx] = bmuSA.data_relay(); // bmu contactor info
   idx +=1;
-  
+
   data_out[idx] = (byte)(modeTimeLeft & 0x00FF);
   data_out[idx+1] = (byte)(modeTimeLeft>>8 & 0x00FF);
   idx +=2;

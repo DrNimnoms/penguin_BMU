@@ -12,12 +12,13 @@
  //time constants
   #define ONEHOUR 36000000 //in milliseconds
   #define FIVEMINUTES 300000  // in milliseconds
-  #define ONEMINUTE 60000  // in milliseconds
+  #define SHUTDOWN_TIME 61000  // in milliseconds
   #define TENSECONDS 10000 //in milliseconds
   #define FIVESECONDS 5000 //in milliseconds
-  #define FIVEHZ 200   // in milliseconds
+  #define LOOP_TIME 200   // in milliseconds
+  #define SLOW_LOOP_TIME 1000   // in milliseconds
 // timeres
-  Metro looptimer = Metro(FIVEHZ);
+  Metro looptimer = Metro(SLOW_LOOP_TIME);
   Metro self_test_timer = Metro(FIVEMINUTES);
   
   
@@ -69,12 +70,12 @@
   
   // safty preameters
   boolean shutdownTimerOn = false;
-  Metro shutdownTimer = Metro(ONEMINUTE);
+  Metro shutdownTimer = Metro(SHUTDOWN_TIME);
 
   
   int bmePriority1[4] = {0,0, 0x0129, 0x07EB};
   int bmePriority2[4] = {0,0x05A0, 0x0616, 0x1814};
-  int bmuPriority1[4] = {0,0X0080, 0x4517, 0x2E5B};
-  int bmuPriority2[4] = {0,0x0033, 0x0068, 0x0024};
+  int bmuPriority1[4] = {0,0X0080, 0x4517, 0x2E1B};
+  int bmuPriority2[4] = {0,0x0033, 0x0068, 0x0064};
   boolean bmcPriority1[4] = {0, 0, 1, 1};
   

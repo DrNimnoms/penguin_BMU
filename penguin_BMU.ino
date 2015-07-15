@@ -1,4 +1,4 @@
-/*------------------------------------------------------------------------------
+ /*------------------------------------------------------------------------------
  * penguin_bmu.ino
  * Created by Nima Ghods
  * Data: 5/1/2015
@@ -26,27 +26,28 @@ void setup() {
   // initialize sd card and get limits, priorities, and battery state from files on sd card
   SdInital();
   // get information from the SD card
-  if(sdCartIn){
-    getPriority();
-    getLimits();
-  }
+//  if(sdCartIn){
+//    getPriority();
+//    getLimits();
+//  }
   
   // initialize the bmu shield
   bmuSA.bmuShield_initialize();
-  if(uartPrint)Serial.println("initialization BMU shield done");
+  bmuSA.set_dt(SLOW_LOOP_TIME/1000.0);
+  if(uartPrint)Serial.println("initialization of BMU shield done");
   
   //initilize BME spi communications
   bme_com_initialize(CLOCK_DIVIDER,SPI_MODE0);
   //set BME adc for both channals
   bmesCh1.set_adc(MD_NORMAL,DCP_DISABLED,CELL_CH_ALL,AUX_CH_ALL,STAT_CH_ALL);
-  if(uartPrint)Serial.println("initialization BME shield done");
+  if(uartPrint)Serial.println("initialization of BME's done");
   
   // initialize BMC communication
   bmcInital();
 
   // get initail conditions from sd card if no history then use voltage lookup table
   getIc();
-
+  Serial.println("\n ");
 }
 
 void loop() {
@@ -64,6 +65,7 @@ void loop() {
     bmuSA.set_bme_min(bmesCh1.cal_min_of_bmes());
     bmuSA.set_bme_max(bmesCh1.cal_max_of_bmes());
     bmuSA.set_flags();
+
     
     // communicate with BMC. get command and send current data
     BMCcomm();   
