@@ -16,7 +16,7 @@
   #define TENSECONDS 10000 //in milliseconds
   #define FIVESECONDS 5000 //in milliseconds
   #define LOOP_TIME 200   // in milliseconds
-  #define SLOW_LOOP_TIME 1000   // in milliseconds
+  #define SLOW_LOOP_TIME 200   // in milliseconds
 // timeres
   Metro looptimer = Metro(SLOW_LOOP_TIME);
   Metro self_test_timer = Metro(FIVEMINUTES);
