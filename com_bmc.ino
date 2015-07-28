@@ -12,6 +12,7 @@ void BMCcomm()
   EthernetClient client = server.available();
   if (client) {
     bmcComTimer.reset();
+    com_loss_timer.reset();
     bmcComFalg=false;
     byte data_out[116];
     getData(&data_out[0]);
@@ -32,6 +33,15 @@ void BMCcomm()
 //      Serial.print(command);
 //    }
   }
+  if(bmcComDt>THIRTYSECONDS && com_loss_timer.check()){
+    client.stop();
+    IPAddress ip(ipadd);
+    server = EthernetServer(port);
+    Ethernet.begin(mac, ip, gateway, subnet);
+    server.begin();
+    delay(5); // waits 5 us for configuration
+  }
+  
 }
 
 /*------------------------------------------------------------------------------

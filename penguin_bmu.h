@@ -13,6 +13,7 @@
   #define ONEHOUR 36000000 //in milliseconds
   #define FIVEMINUTES 300000  // in milliseconds
   #define SHUTDOWN_TIME 61000  // in milliseconds
+  #define THIRTYSECONDS 30000 //in milliseconds
   #define TENSECONDS 10000 //in milliseconds
   #define FIVESECONDS 5000 //in milliseconds
   #define LOOP_TIME 200   // in milliseconds
@@ -20,6 +21,7 @@
 // timeres
   Metro looptimer = Metro(SLOW_LOOP_TIME);
   Metro self_test_timer = Metro(FIVEMINUTES);
+  Metro com_loss_timer = Metro(THIRTYSECONDS)
   
   
   // BME communication
