@@ -33,7 +33,7 @@ void BMCcomm()
 //      Serial.print(command);
 //    }
   }
-  if(bmcComDt>THIRTYSECONDS && com_loss_timer.check()){
+  if(bmcComDt>THIRTYSECONDS && com_loss_timer.check()){  //if communication is lost 
     client.stop();
     IPAddress ip(ipadd);
     server = EthernetServer(port);

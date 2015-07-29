@@ -21,7 +21,7 @@
 // timeres
   Metro looptimer = Metro(SLOW_LOOP_TIME);
   Metro self_test_timer = Metro(FIVEMINUTES);
-  Metro com_loss_timer = Metro(THIRTYSECONDS)
+  Metro com_loss_timer = Metro(THIRTYSECONDS);
   
   
   // BME communication
@@ -75,8 +75,8 @@
   Metro shutdownTimer = Metro(SHUTDOWN_TIME);
 
   
-  int bmePriority1[4] = {0,0, 0x0129, 0x07EB};
-  int bmePriority2[4] = {0,0x05A0, 0x0616, 0x1814};
+  int bmePriority1[4] = {0,0, 0x0129, 0x27EB};
+  int bmePriority2[4] = {0,0x25A0, 0x2616, 0x5814};
   int bmuPriority1[4] = {0,0X0080, 0x4517, 0x2E1B};
   int bmuPriority2[4] = {0,0x0033, 0x0068, 0x0064};
   boolean bmcPriority1[4] = {0, 0, 1, 1};
